@@ -1,191 +1,170 @@
-## 学习任务
+**1. 合并两个有序链表**
 
-### Task01：数组（1天）
-<b>理论部分</b>
+https://leetcode-cn.com/problems/merge-two-sorted-lists/
 
-- 理解数组的存储与分类。
-- 实现动态数组，该数组能够根据需要修改数组的长度。
-
-<b>练习部分</b>
-
-<u>1. 利用动态数组解决数据存放问题</u>
-
-编写一段代码，要求输入一个整数`N`，用动态数组`A`来存放`2~N`之间所有5或7的倍数，输出该数组。
+将两个有序链表合并为一个新的有序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
 
 示例：
-```c
-输入：
-N = 100 
 
-输出：
-5 7 10 14 15 20 21 25 28 30 35 40 42 45 49 50 55 56 60 63 65 70 75 77 80 84 85 90 91 95 98 100
+```python
+输入：1->2->4, 1->3->4
+输出：1->1->2->3->4->4
 ```
 
 ```c++
-void D_array(int N)
+ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
 {
-	int count =0;
-	for(int i = 2; i <= N; ++i)
-	{
-		if(i%5==0 || i%7==0)
-		{
-			count +=1;
-		}
-	}
-	int *d_array = (int*)malloc(sizeof(int*)* count);
-	count =0;
-	for(int i = 2; i <= N; ++i)
-	{
-		if(i%5==0 || i%7==0)
-		{
-			d_array[count] = i;
-			count +=1;
-		}
-	}
 
-	for(int i =0; i< count;++i)
+	ListNode *dummy =  new ListNode(-1);
+	ListNode *cur = dummy;
+	while(l1 && l2)
 	{
-		printf("%d ",d_array[i]);
+		if(l1->val < l2->val)
+		{
+			cur->next = l1;
+			l1=l1->next;
+		}
+		else{
+			cur->next=l2;
+			l2=l2->next;
+		}
+		
+		cur = cur->next;
+
 	}
-	printf("\n");
-	free(d_array);
+	cur->next=l1?l1:l2;
+	return dummy->next;
+
 }
 ```
 
 
 
-<u>
+**2. 删除链表的倒数第N个节点**
 
-2. 托普利茨矩阵问题</u>
+https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
 
-如果一个矩阵的每一方向由左上到右下的对角线上具有相同元素，那么这个矩阵是托普利茨矩阵。
-
-给定一个`M x N`的矩阵，当且仅当它是托普利茨矩阵时返回`True`。
+给定一个链表，删除链表的倒数第 *n* 个节点，并且返回链表的头结点。
 
 示例：
 
-```c
-输入:
-matrix = [
-  [1,2,3,4],
-  [5,1,2,3],
-  [9,5,1,2]
-]
+```python
+给定一个链表: 1->2->3->4->5, 和 n = 2.
 
-输出: True
+当删除了倒数第二个节点后，链表变为 1->2->3->5.
 ```
+
+说明：
+
+给定的 n 保证是有效的。
+
+
+
+```c++
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode *temp = new ListNode(-1);
+        temp->next = head;
+        int numCount=0;
+        while(head)
+        {
+            if(head->next==NULL)
+            {
+                numCount+=1;
+                break;
+            }
+            numCount+=1;
+            head = head->next;
+        }
+        if(numCount<=1)return temp->next=NULL;
+        
+        head = temp->next;
+        int break_index =numCount-n;
+        if(break_index==0)return temp->next->next;
+        // printf(" --%d", break_index);
+        for(int i =1; i <= numCount; ++i)
+        {
+            if(i == break_index)
+                {
+                 head->next=head->next->next;
+                 break;   
+                }
+            else
+                head=head->next;
+
+            
+        }
+    
+        return temp->next;
+
+    }
+```
+
+
+
+
+
+
+
+
+**3. 旋转链表**
+
+https://leetcode-cn.com/problems/rotate-list/
+
+给定一个链表，旋转链表，将链表每个节点向右移动*k*个位置，其中*k*是非负数。
+
+示例 1:
+
+```python
+输入: 1->2->3->4->5->NULL, k = 2
+输出: 4->5->1->2->3->NULL
+
 解释:
-
-在上述矩阵中, 其对角线为:
-`"[9]", "[5, 5]", "[1, 1, 1]", "[2, 2, 2]", "[3, 3]", "[4]"`。
-各条对角线上的所有元素均相同, 因此答案是`True`。
-
-```c++
-bool t_matrix(int M[][4], int rows, int cols)
-{
-	for(int i =0; i< rows-1;++i)
-	{
-		for(int j = 0; j < cols-1;++j)
-		{
-			
-			if(M[i][j] != M[i+1][j+1])
-			{
-				printf("false\n");
-				return false;
-			}
-		}
-	}
-	return true;
-}
+向右旋转 1 步: 5->1->2->3->4->NULL
+向右旋转 2 步: 4->5->1->2->3->NULL
 ```
 
+示例 2:
 
+```python
+输入: 0->1->2->NULL, k = 4
+输出: 2->0->1->NULL
 
-<u>3. 三数之和</u>
-
-https://leetcode-cn.com/problems/3sum/
-
-给定一个包含 n 个整数的数组`nums`，判断`nums`中是否存在三个元素`a，b，c`，使得`a + b + c = 0`？找出所有满足条件且不重复的三元组。
-
-注意：答案中不可以包含重复的三元组。
-
-示例：
-
-```c
-给定数组 nums = [-1, 0, 1, 2, -1, -4]，
-
-满足要求的三元组集合为：
-[
-  [-1, 0, 1],
-  [-1, -1, 2]
-]
+解释:
+向右旋转 1 步: 2->0->1->NULL
+向右旋转 2 步: 1->2->0->NULL
+向右旋转 3 步: 0->1->2->NULL
+向右旋转 4 步: 2->0->1->NULL
 ```
 
+---
+
 ```c++
-void sum3num(int arr[], int length)
-{
-	std::vector<std::vector<int>> temp;
-	for(int i=0; i< length; ++i)
-	{
-		for(int j =i+1; j < length; ++j)
-		{
-			for(int k =j+1; k<length; ++k)
-			{
-				if(k==j ||k ==i ||i==j)
-				{
-					continue;
-				}
-				if(arr[i]+arr[j]+arr[k] ==0)
-				{
-					std::vector<int> t;
-					t.push_back(arr[i]);
-					t.push_back(arr[j]);
-					t.push_back(arr[k]);
-					if(temp.size()>0)
-					{
-						bool is_same=false;
-						for(int p =0; p< temp.size(); ++p)
-						{
-							std::vector<int> t1= temp[p];
-							int same=0;
-							for(int q =0; q<3;q++)
-							{
-								for(int r=0; r < t.size(); r++)
-								{
-									if(t[q]==t1[r])
-									{
-										same +=1;
-									}
-								}
-								
-							}
-							if(same==3)
-								{
-
-										is_same =true;
-										break;
-									}
-								else
-									same = 0;
-
-						}
-						if(!is_same)
-							{
-								temp.push_back(t);
-								printf("%d %d %d\n ", arr[i],  arr[j],  arr[k] );
-						}
-					}
-					else{
-						temp.push_back(t);
-						printf("%d %d %d\n ", arr[i],  arr[j],  arr[k] );
-					}
-
-
-				}
-			}
-		}
-	}
+struct ListNode* rotateRight(struct ListNode* head, int k){
+    if(head==NULL || k==0) return head;
+    struct ListNode *p,*p1,*p2;
+    p=p1=p2=head;
+    int n=0;
+    //计算链表长度
+    while(p){
+        n++;
+        p=p->next;
+    }
+    k%=n;
+    if(k>0){
+        int n1=n-k;
+        while(--n1){
+            p2=p2->next;
+        }
+        p1=p2->next;
+        p2->next=NULL;
+        struct ListNode *head1=p1;
+        while(p1&&p1->next){
+            p1=p1->next;
+        }
+        p1->next=head;
+        return head1;
+        }
+    return head;
 }
-
 ```
 
